@@ -20,7 +20,7 @@ begin
 end
 
 # ╔═╡ 44c8328a-542c-11eb-3b23-cf40ac15fccd
-data = CSV.File("filtered_dataset.csv") |> DataFrame
+data = CSV.File("../data/filtered_dataset.csv") |> DataFrame
 
 # ╔═╡ 59b1a1d6-542c-11eb-1af9-e93e39232507
 names(data)
