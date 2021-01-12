@@ -16,7 +16,7 @@ end
 # ╔═╡ a0f92f18-542d-11eb-1a5a-cf851148a599
 begin
 	using Plots, StatsPlots, CSV, DataFrames, DataFramesMeta, Turing, Pipe, PlutoUI
-	plotly()
+	gr()
 end
 
 # ╔═╡ 44c8328a-542c-11eb-3b23-cf40ac15fccd
