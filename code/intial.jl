@@ -29,19 +29,31 @@ names(data)
 @bind variable Select([string(i) => i for i ∈ names(data)])
 
 # ╔═╡ 251344e6-542e-11eb-10bf-fd7d81778a4a
-unique(data[:, :judge])
+judges = unique(data[:, :judge])
 
 # ╔═╡ 85ff03b4-542c-11eb-3a31-d5b3d01d6065
 missing_filter(df :: DataFrame, name :: String) = filter(x -> !ismissing(x), df[:, Symbol(name)])
 
-# ╔═╡ 5c5c2e7e-542c-11eb-2f6e-d5d55be90f33
-histogram(missing_filter(data, variable), legend=false, title="Distribution of $(variable)")
+# ╔═╡ 062d6b88-55e1-11eb-046a-1b69265dc4a8
+function compare_across_judges(data :: DataFrame, variable :: String)
+	judges = unique(data[:, :judge])
+	plt = histogram(title="Distribution of $(variable)")
+	for judge ∈ judges
+		sub_df = @linq data |> where(:judge .== judge)
+		histogram!(missing_filter(sub_df, variable), opacity=0.5, label=judge, normalize=:pdf)
+	end
+	return plt
+end
+
+# ╔═╡ 944c2e9a-55e1-11eb-1c60-1baa43817c80
+compare_across_judges(data, variable)
 
 # ╔═╡ Cell order:
 # ╠═a0f92f18-542d-11eb-1a5a-cf851148a599
 # ╠═44c8328a-542c-11eb-3b23-cf40ac15fccd
 # ╠═59b1a1d6-542c-11eb-1af9-e93e39232507
 # ╟─095f998a-542d-11eb-3083-0b26b709d295
-# ╠═5c5c2e7e-542c-11eb-2f6e-d5d55be90f33
+# ╠═944c2e9a-55e1-11eb-1c60-1baa43817c80
 # ╠═251344e6-542e-11eb-10bf-fd7d81778a4a
+# ╠═062d6b88-55e1-11eb-046a-1b69265dc4a8
 # ╟─85ff03b4-542c-11eb-3a31-d5b3d01d6065
