@@ -26,23 +26,24 @@ data = CSV.File("../data/circuit6.csv") |> DataFrame
 names(data)
 
 # ╔═╡ 095f998a-542d-11eb-3083-0b26b709d295
-@bind variable Select([string(i) => i for i ∈ names(data)])
+@bind variable Select([string(i) => Symbol(i) for i ∈ names(data)])
 
 # ╔═╡ 251344e6-542e-11eb-10bf-fd7d81778a4a
 judges = unique(data[:, :judge])
 
 # ╔═╡ 85ff03b4-542c-11eb-3a31-d5b3d01d6065
-missing_filter(df :: DataFrame, name :: String) = filter(x -> !ismissing(x), df[:, Symbol(name)])
+missing_filter(df :: DataFrame, name :: String) = begin
+	sub = df[:, [:judge, Symbol(name)]]
+	return sub[completecases(sub), :]
+end
 
 # ╔═╡ 062d6b88-55e1-11eb-046a-1b69265dc4a8
 function compare_across_judges(data :: DataFrame, variable :: String)
-	judges = unique(data[:, :judge])
-	plt = histogram(title="Distribution of $(variable)")
-	for judge ∈ judges
-		sub_df = @linq data |> where(:judge .== judge)
-		histogram!(missing_filter(sub_df, variable), opacity=0.5, label=judge, normalize=:pdf)
-	end
-	return plt
+	@df missing_filter(data, variable) histogram(
+		cols(Symbol(variable)),
+		group=:judge,
+		opacity=0.5
+	)
 end
 
 # ╔═╡ 944c2e9a-55e1-11eb-1c60-1baa43817c80
