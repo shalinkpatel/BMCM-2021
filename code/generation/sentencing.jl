@@ -17,14 +17,14 @@ end
     ω ~ Gamma(2, 2)
 
     for i ∈ 1:length(crimpts)
-        crimpts[i] ~ Exponential(ω[1] * crimhist[i] + 0.0001)
+        crimpts[i] ~ Exponential(ω[1] * (crimhist[i] + 1))
     end
 
     Ω = Vector(undef, 6)
     Ω .~ Gamma(2, 2)
 
     for i ∈ 1:length(pristot)
-        pristot[i] ~ Pareto(Ω[1] * age[i] + Ω[2] * citizen[i] + Ω[3] * monsex[i] + Ω[4] * neweduc[i] + Ω[5] * newrace[i] + Ω[6] * crimpts[i]) - 1
+        pristot[i] ~ Exponential(Ω[1] * age[i] + Ω[2] * citizen[i] + Ω[3] * (monsex[i] + 1) + Ω[4] * neweduc[i] + Ω[5] * newrace[i] + Ω[6] * crimpts[i])
     end
 end
 
@@ -33,7 +33,7 @@ end
     for i ∈ 1:6
         Ω[i] ~ Ω₀[i]
     end
-    pristot ~ Pareto(Ω[1] * age + Ω[2] * citizen + Ω[3] * monsex + Ω[4] * neweduc + Ω[5] * newrace + Ω[6] * crimpts) - 1
+    pristot ~ Exponential(Ω[1] * age + Ω[2] * citizen + Ω[3] * (monsex + 1) + Ω[4] * neweduc + Ω[5] * newrace + Ω[6] * crimpts)
     return pristot
 end
 
