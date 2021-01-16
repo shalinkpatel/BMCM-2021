@@ -1,6 +1,6 @@
 using DataFrames, DataFramesMeta, CSV
 
-circuit = 14
+circuit = 10
 
 dataset = CSV.File("../data/FinalDataset.csv") |> DataFrame
 subset = @linq dataset |> 

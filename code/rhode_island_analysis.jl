@@ -15,6 +15,9 @@ end
 # ╔═╡ 71f73f02-56df-11eb-0fde-195f836871e8
 using Pipe, Distributions
 
+# ╔═╡ 8bb5e48c-583f-11eb-0676-65d8502a1304
+using StatsBase
+
 # ╔═╡ f794bfb8-5687-11eb-0324-1f5626746d50
 raw_data = CSV.File("../data/circuit6.csv") |> DataFrame;
 
@@ -94,7 +97,7 @@ function generate_posterier(data :: DataFrame, judge :: JudgeProfile)
 	samples = []
 	for i ∈ 1:size(data, 1)
 		sample_point = (data[i, :] |> Array)[((1:3) ∪ (5:(end-1)))]
-		sentencing = sentencing_generation(judge, sample_point, 10)
+		sentencing = sentencing_generation(judge, sample_point, 100)
 		samples = vcat(samples, sentencing[:pristot] |> Array)
 	end
 	return samples
@@ -118,11 +121,11 @@ begin
 	density!(william_profile.profile[:, :PRISTOT], label="Actual William")
 end
 
-# ╔═╡ a2dcc0d0-56e0-11eb-2d5f-9dc4665501a1
-fit_mle(Exponential, william_posterior)
+# ╔═╡ 90b288dc-583f-11eb-1195-19fba2e4ad72
+kldivergence(fit_mle(Exponential, john_posterior), fit_mle(Exponential, Float64.(john_profile.profile[:, :PRISTOT])))
 
-# ╔═╡ bf7d5080-56e0-11eb-2468-a3455cb5a242
-fit_mle(Exponential, william_profile.profile[:, :PRISTOT])
+# ╔═╡ f8750318-5840-11eb-1fef-fdf9c965ef1a
+kldivergence(fit_mle(Exponential, william_posterior), fit_mle(Exponential, Float64.(william_profile.profile[:, :PRISTOT])))
 
 # ╔═╡ Cell order:
 # ╠═d84e151c-5687-11eb-10d6-6f2de1177528
@@ -147,5 +150,6 @@ fit_mle(Exponential, william_profile.profile[:, :PRISTOT])
 # ╠═c2723dba-56df-11eb-3fa8-bfb8eba3e291
 # ╠═238e6088-56e0-11eb-0493-c950c4d37ecd
 # ╠═78c8f7a4-56e0-11eb-259a-258a22c828e4
-# ╠═a2dcc0d0-56e0-11eb-2d5f-9dc4665501a1
-# ╠═bf7d5080-56e0-11eb-2468-a3455cb5a242
+# ╠═8bb5e48c-583f-11eb-0676-65d8502a1304
+# ╠═90b288dc-583f-11eb-1195-19fba2e4ad72
+# ╠═f8750318-5840-11eb-1fef-fdf9c965ef1a
